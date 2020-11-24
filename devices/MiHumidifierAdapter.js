@@ -57,6 +57,10 @@ module.exports = class {
           callback(err);
         });
       }.bind(this));
+      
+      setInterval(function() {
+        characteristic.getValue();
+      }, 5000);
     }
 
     if ('set' in cconfig) {
