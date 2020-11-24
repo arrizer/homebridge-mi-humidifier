@@ -146,6 +146,11 @@ class MiHumidifier {
                 characteristic.setProps(setPropsValue);
             }
             characteristic.on(operation === CharacteristicOperation.GET ? 'get' : 'set', callback.bind(this));
+            if (operation === CharacteristicOperation.GET) {
+                setInterval(function() {
+                    characteristic.getValue();
+                }, 5000);
+            }
         }
     }
 
