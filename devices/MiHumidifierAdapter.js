@@ -58,9 +58,11 @@ module.exports = class {
         });
       }.bind(this));
       
-      setInterval(function() {
-        characteristic.getValue();
-      }, 5000);
+      if ('poll' in cconfig) {
+        setInterval(function() {
+          characteristic.getValue();
+        }, cconfig.poll * 1000);
+      }
     }
 
     if ('set' in cconfig) {

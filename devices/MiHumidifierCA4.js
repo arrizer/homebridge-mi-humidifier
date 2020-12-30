@@ -15,6 +15,7 @@ module.exports = class extends MiHumidifierAdapter {
         service: this.humidifierService,
         type   : Characteristic.CurrentRelativeHumidity,
         props  : null,
+        poll   : 5,
         get    : {
           call_name        : 'get_properties',
           call_args        : function (_this) {
@@ -47,6 +48,7 @@ module.exports = class extends MiHumidifierAdapter {
         service: this.humidifierService,
         type   : Characteristic.Active,
         props  : null,
+        poll   : 5,
         get    : {
           call_name        : 'get_properties',
           call_args        : function (_this) {
@@ -156,6 +158,7 @@ module.exports = class extends MiHumidifierAdapter {
         service: this.humidifierService,
         type   : Characteristic.WaterLevel,
         props  : null,
+        poll   : 20,
         get    : {
           call_name        : 'get_properties',
           call_args        : function (_this) {
@@ -209,6 +212,7 @@ module.exports = class extends MiHumidifierAdapter {
           maxValue: 3,
           minStep : 1,
         },
+        poll   : 30,
         get    : {
           call_name        : 'get_properties',
           call_args        : function (_this) {
