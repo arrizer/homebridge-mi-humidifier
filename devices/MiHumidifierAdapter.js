@@ -34,6 +34,7 @@ module.exports = class {
     // OptionalServices
     this.optionalServices = [];
 
+    this.valueCache = {};
   }
 
   // private
@@ -50,7 +51,7 @@ module.exports = class {
           return;
         }
 
-        this.getCharacteristicValue(cconfig.id, cconfigget).then(result=>{
+        this.getCharacteristicValue(cconfig.id, cconfigget, true).then(result=>{
           cconfigget.response_callback(this, result.value, callback);
         }).catch(err => {
           this.log.warn(`[${cconfig.id}]-[GET] Error:`, err);
@@ -60,8 +61,10 @@ module.exports = class {
       
       if ('poll' in cconfig) {
         setInterval(function() {
-          characteristic.getValue();
-        }, cconfig.poll * 1000);
+          this.getCharacteristicValue(cconfig.id, cconfigget, false).then(result=>{
+            characteristic.getValue();  
+          });
+        }.bind(this), 5000);
       }
     }
 
@@ -108,7 +111,24 @@ module.exports = class {
   }
 
   // private
-  async getCharacteristicValue(cconfigid, cconfigget) {
+  async getCharacteristicValue(cconfigid, cconfigget, allowCache) {
+    if (allowCache) {
+      var cached = this.valueCache[cconfigid];
+      var now = new Date();
+      if (cached != null) {
+        console.error("*** Using cached value for " + cconfigid + ": " + cached);
+        return cached;
+      }
+    }
+
+    console.error("*** Fetching device value for " + cconfigid);
+    var result = await this.getCharacteristicValueFromDevice(cconfigid, cconfigget);
+    this.valueCache[cconfigid] = result;
+    return result;
+  }
+
+  // private
+  async getCharacteristicValueFromDevice(cconfigid, cconfigget) {
     let isFirstCallDone = false;
 
     // "this.device.call" hangs after idle, so there is getCharacteristicDelayedPromise to be started with "idleRequestTimeout" delay
