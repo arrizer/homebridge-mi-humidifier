@@ -63,7 +63,9 @@ module.exports = class {
         setInterval(function() {
           this.getCharacteristicValue(cconfig.id, cconfigget, false).then(result=>{
             characteristic.getValue();  
-          });
+          }).catch(err => {
+            this.log.warn(`[${cconfig.id}]-[POLL] Error:`, err);
+          });;
         }.bind(this), 5000);
       }
     }
