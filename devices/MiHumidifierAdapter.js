@@ -93,6 +93,9 @@ module.exports = class {
 
   // private
   async getCharacteristicValueAttempt(cconfigid, cconfigget, resolve, reject, attemptNumber) {
+    if (!this.verifyDevice(reject)) {
+      return;
+    }
     this.log.debug(`[${cconfigid}]-[GET] Call device:`, cconfigget.call_name, cconfigget.call_args(this));
     this.device.call(cconfigget.call_name, cconfigget.call_args(this))
     .then(value => resolve({ attempt: attemptNumber, value: value }))
